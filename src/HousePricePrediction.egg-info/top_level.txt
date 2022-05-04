@@ -1,3 +1,0 @@
-ingest_data
-score
-train
