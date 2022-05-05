@@ -13,9 +13,9 @@ import numpy as np
 class parse_log:
     def __init__(self):
         parser = argparse.ArgumentParser()
-        parser.add_argument("--model_folder", type = str,help="provide model folder")
-        parser.add_argument("--dataset_folder", type = str,help="provide the dataset folder")
-        parser.add_argument("--output_folder", type = str,help="provide the output folder")
+        parser.add_argument("--model_folder", default='artifacts/models/', type = str,help="provide model folder")
+        parser.add_argument("--dataset_folder",default='data/processed/test.csv', type = str,help="provide the dataset folder")
+        parser.add_argument("--output_folder",default='artifacts', type = str,help="provide the output folder")
         parser.add_argument("--log_level", type = str,help="specifiy level of debug")
         parser.add_argument("--log_path", type = str,help="specify the path where to save log file")
         parser.add_argument("--no_console_log", type = str,help="specify to log on console or not")
@@ -66,37 +66,20 @@ class scores:
         self.logger = obj.logger
     
     def results(self):
-        dir = up(os.path.realpath(os.getcwdb()))
-        dir = dir.decode('utf-8')
-        if self.args.dataset_folder:
-            df = pd.read_csv(self.args.dataset_folder)
-            Y = df[["median_house_value"]]
-            X = df.drop("median_house_value",axis=1)
-        else:
-            df = pd.read_csv(str(dir) +'\\data\\processed\\test.csv')
-            Y = df[["median_house_value"]]
-            X = df.drop("median_house_value",axis=1)
-
-        if self.args.model_folder:
-            for filename in os.scandir(self.args.model_folder):
-                with open(filename , 'rb') as f:
-                    model = pickle.load(f)
-                    pred = model.predict(X)
-                    mse_ = mse(pred,Y)
-                    rmse = np.sqrt(mse_)
-                    r2 = r2_score(pred,Y)
-                    self.logger.debug("rmse %d",rmse)
-                    self.logger.debug("r2 %f",r2)
-        else:
-            for filename in os.scandir(str(dir)+'\data\models'):
-                with open(filename , 'rb') as f:
-                    model = pickle.load(f)
-                    pred = model.predict(X)
-                    mse_ = mse(pred,Y)
-                    rmse = np.sqrt(mse_)
-                    r2 = r2_score(pred,Y)
-                    self.logger.debug("rmse %d",rmse)
-                    self.logger.debug("r2 %f",r2)
-
-obj = scores()
-obj.results()
+        self.df = pd.read_csv(self.args.dataset_folder)
+        self.Y = self.df[["median_house_value"]]
+        self.X = self.df.drop("median_house_value",axis=1)
+        Y,X=Y.values,X.values
+        self.rmse = None
+        self.r2 = None
+        for filename in os.scandir(self.args.model_folder):
+            with open(filename , 'rb') as f:
+                model = pickle.load(f)
+                pred = model.predict(X)
+                mse_ = mse(pred,Y)
+                self.rmse = np.sqrt(mse_)
+                self.r2 = r2_score(pred,Y)
+                self.logger.debug("rmse %d",self.rmse)
+                self.logger.debug("r2 %f",self.r2)
+#obj = scores()
+#obj.results()

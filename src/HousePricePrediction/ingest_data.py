@@ -18,7 +18,7 @@ import argparse
 class ingest_data:
     def __init__(self):
         self.DOWNLOAD_ROOT = "https://raw.githubusercontent.com/ageron/handson-ml/master/"
-        self.HOUSING_PATH = os.path.join("datasets", "housing")
+        self.HOUSING_PATH =  '\\data\\raw'
         self.HOUSING_URL = self.DOWNLOAD_ROOT + "datasets/housing/housing.tgz"
         self.strat_train_set =  None
         self.strat_test_set = None
@@ -29,10 +29,10 @@ class ingest_data:
 
     def parse_args(self):
         parser = argparse.ArgumentParser()
-        parser.add_argument("--ingest_data_path", type = str,help="specify the output folder/file path")
-        parser.add_argument("--log_level", type = str,help="specifiy level of debug")
+        parser.add_argument("--ingest_data_path", type = str,default="data/processed/",help="specify the output folder/file path")
+        parser.add_argument("--log_level", type = str,default='DEBUG',help="specifiy level of debug")
         parser.add_argument("--log_path", type = str,help="specify the path where to save log file")
-        parser.add_argument("--no_console_log", type = str,help="specify to log on console or not")
+        parser.add_argument("--no_console_log", type = str,default=None,help="specify to log on console or not")
         args = parser.parse_args()
         self.args = args
         return args
@@ -173,13 +173,13 @@ class ingest_data:
         # save in default
         else:
             self.logger.debug('user didnt provide path to save files')
-            dir = up(up(os.path.realpath(os.getcwdb())))
-            dir = dir.decode('utf-8')
-            dir = str(dir)+'\data\processed'
-            self.df_train.to_csv(dir+'\\train.csv')
-            self.df_test.to_csv(dir+'\\test.csv')
-            self.logger.debug('saving at default path %s',dir+'\\train.csv')
-            self.logger.debug('saving at default path %s',dir+'\\test.csv')
+            #dir = up(os.path.realpath(os.getcwdb()))
+            #dir = dir.decode('utf-8')
+            dir = self.args.ingest_data_path
+            self.df_train.to_csv(dir+'/train.csv')
+            self.df_test.to_csv(dir+'/test.csv')
+            self.logger.debug('saving at default path %s',dir+'/train.csv')
+            self.logger.debug('saving at default path %s',dir+'/test.csv')
             
     def split_X_Y(self,data):
         self.logger.debug('Data is being split to X and Y component')
@@ -188,6 +188,6 @@ class ingest_data:
         return X.values,Y
 
 
-obj = ingest_data()
-obj.stratifiedsplit()
-obj.transform_train_test()
+#obj = ingest_data()
+#obj.stratifiedsplit()
+#obj.transform_train_test()
