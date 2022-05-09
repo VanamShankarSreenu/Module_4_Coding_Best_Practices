@@ -3,7 +3,6 @@ import logging
 import os
 from os.path import dirname as up
 import pickle
-from statistics import mode
 import pandas as pd
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.metrics import r2_score
@@ -69,17 +68,16 @@ class scores:
         self.df = pd.read_csv(self.args.dataset_folder)
         self.Y = self.df[["median_house_value"]]
         self.X = self.df.drop("median_house_value",axis=1)
-        Y,X=Y.values,X.values
         self.rmse = None
         self.r2 = None
         for filename in os.scandir(self.args.model_folder):
             with open(filename , 'rb') as f:
                 model = pickle.load(f)
-                pred = model.predict(X)
-                mse_ = mse(pred,Y)
+                pred = model.predict(self.X.values)
+                mse_ = mse(pred,self.Y.values)
                 self.rmse = np.sqrt(mse_)
-                self.r2 = r2_score(pred,Y)
+                self.r2 = r2_score(pred,self.Y.values)
                 self.logger.debug("rmse %d",self.rmse)
                 self.logger.debug("r2 %f",self.r2)
-#obj = scores()
-#obj.results()
+obj = scores()
+obj.results()

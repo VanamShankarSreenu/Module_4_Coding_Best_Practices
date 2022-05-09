@@ -2,3 +2,4 @@
 *.csv
 *.txt
 *.pkl
+!mle_training/

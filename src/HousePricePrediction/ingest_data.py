@@ -18,7 +18,7 @@ import argparse
 class ingest_data:
     def __init__(self):
         self.DOWNLOAD_ROOT = "https://raw.githubusercontent.com/ageron/handson-ml/master/"
-        self.HOUSING_PATH =  '\\data\\raw'
+        self.HOUSING_PATH =  'data/raw/'
         self.HOUSING_URL = self.DOWNLOAD_ROOT + "datasets/housing/housing.tgz"
         self.strat_train_set =  None
         self.strat_test_set = None
@@ -80,11 +80,11 @@ class ingest_data:
 
 
     def fetch_housing_data(self):
-        os.makedirs(self.HOUSING_PATH, exist_ok=True)
-        tgz_path = os.path.join(self.HOUSING_PATH, "housing.tgz")
+        os.makedirs('data/raw/', exist_ok=True)
+        tgz_path = os.path.join('data/raw/', "housing.tgz")
         urllib.request.urlretrieve(self.HOUSING_URL, tgz_path)
         housing_tgz = tarfile.open(tgz_path)
-        housing_tgz.extractall(path=self.HOUSING_PATH)
+        housing_tgz.extractall(path='data/raw/')
         self.logger.debug('extracted dataset to  path [%s] ',tgz_path)
         housing_tgz.close()
 
@@ -181,13 +181,7 @@ class ingest_data:
             self.logger.debug('saving at default path %s',dir+'/train.csv')
             self.logger.debug('saving at default path %s',dir+'/test.csv')
             
-    def split_X_Y(self,data):
-        self.logger.debug('Data is being split to X and Y component')
-        Y = data[["median_house_value"]]
-        X = data.drop("median_house_value",axis=1)
-        return X.values,Y
 
-
-#obj = ingest_data()
-#obj.stratifiedsplit()
-#obj.transform_train_test()
+obj = ingest_data()
+obj.stratifiedsplit()
+obj.transform_train_test()

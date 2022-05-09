@@ -89,7 +89,9 @@ class Model:
         self.Y = self.df[["median_house_value"]]
         self.X = self.df.drop("median_house_value",axis=1)
         dr.fit(self.X,self.Y)
-        path = os.path.join(path, "linearmodel.pkl")
+        os.makedirs(self.args.output_model_path ,exist_ok=True)
+        path = self.args.output_model_path
+        path = os.path.join(path, "desmodel.pkl")
         self.logger.debug('saving at  path provided in args %s',path)
         with open(path, "wb") as file:
             pickle.dump(dr, file)
@@ -105,7 +107,9 @@ class Model:
         self.Y = self.df[["median_house_value"]]
         self.X = self.df.drop("median_house_value",axis=1)
         rg.fit(self.X.values,self.Y.values)
-        path = os.path.join(path, "linearmodel.pkl")
+        os.makedirs(self.args.output_model_path ,exist_ok=True)
+        path = self.args.output_model_path
+        path = os.path.join(path, "regmodel.pkl")
         self.logger.debug('saving at  path provided in args %s',path)
         with open(path, "wb") as file:
             pickle.dump(rg, file)
@@ -113,5 +117,7 @@ class Model:
             file.close()
         self.rg = rg
 
-#obj =  Model()
-#obj.Linear_Model_train()
+obj =  Model()
+obj.Linear_Model_train()
+obj.DesTree_Model_Train()
+obj.RanFor_Model_Train()
