@@ -1,6 +1,5 @@
 import imp
 import importlib.util
-from pandas import options
 def test_installation():
     import HousePricePrediction
     import HousePricePrediction.ingest_data
