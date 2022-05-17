@@ -1,4 +1,3 @@
-import imp
 import importlib.util
 def test_installation():
     import HousePricePrediction
